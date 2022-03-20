@@ -5,8 +5,8 @@ namespace KOT
 
 void TestAll()
 {
-    // TestJson();
-    // TestWorker();
+    TestJson();
+    TestWorker();
     TestLua();
 }
 

@@ -54,6 +54,10 @@ list(APPEND SRC_FILES ${SRC_LUA})
 list(APPEND SRC_FILES ${SRC_LUA_WRAPPER})
 list(APPEND SRC_FILES ${SRC_TEST})
 
-message("src file:" ${SRC_FILES})
+message("SRC_FILES:")
+foreach(src_file ${SRC_FILES})
+    message(${src_file})
+endforeach()
+
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} pthread rt)
