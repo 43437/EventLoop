@@ -56,16 +56,26 @@ void CWorker::Run()
         {
             break;
         }
+        else
+        {
+            OnMessage(strMsg);
+        }
+        
     }
+}
+
+void CWorker::OnMessage(const std::string& strMsg)
+{
+
 }
 
 void CWorker::Start()
 {
    m_objThread = std::thread(&CWorker::Run, this);
-   //test add begin
-   int iTimer = NewTimer();
-   StartTimer(iTimer, 1, 1, 1, 1);
-   //test add end
+//    //test add begin
+//    int iTimer = NewTimer();
+//    StartTimer(iTimer, 1, 1, 1, 1);
+//    //test add end
 }
 
 void CWorker::Quit()
@@ -85,16 +95,16 @@ void CWorker::Message(const std::string& string)
 
 void CWorker::OnTimer(int iTimerID)
 {
-    //test add begin 
-    static int i = 0;
-    ++i;
-    if (i > 5)
-    {
-        m_objMsgQueue.QueueIn(WORKER_QUIT);
-        return;
-    }
-    //test add end
-    m_objMsgQueue.QueueIn("timer: " + std::to_string(iTimerID));
+    // //test add begin 
+    // static int i = 0;
+    // ++i;
+    // if (i > 5)
+    // {
+    //     m_objMsgQueue.QueueIn(WORKER_QUIT);
+    //     return;
+    // }
+    // //test add end
+    // m_objMsgQueue.QueueIn("timer: " + std::to_string(iTimerID));
 }
 
 int CWorker::NewTimer()

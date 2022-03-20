@@ -8,8 +8,8 @@
 
 namespace KOT
 {
-extern const char* KOT_LUA_LIB = "kot";
-extern luaL_Reg utilityFunc[] = {
+const char* KOT_LUA_LIB = "kot";
+luaL_Reg utilityFunc[] = {
     {"log",     Log},
     {nullptr,   nullptr}
 };

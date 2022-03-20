@@ -32,11 +32,11 @@ class CWorker
 public:
     CWorker(const SWorkerID& stuWorkID);
     virtual ~CWorker();
-    void Start();
-    void Message(const std::string& string);
+    virtual void Start();
+    virtual void Message(const std::string& string);
     void Quit();
     void WaitForQuit();
-    void OnTimer(int iTimerID);
+    virtual void OnTimer(int iTimerID);
 
 protected:
     class CWorkerTimerCaller : public CTimerCaller
@@ -49,7 +49,8 @@ protected:
     };
 
 protected:
-    void Run();
+    virtual void Run();
+    virtual void OnMessage(const std::string& strMsg);
     int NewTimer();
     bool SetTimer(int iTimerID, __time_t iSecStart, __time_t iSecInterval, long iNanoSecStart = 0, long iNanoSecInterval = 0);
     bool StartTimer(int iTimerID, __time_t iSecStart, __time_t iSecInterval, long iNanoSecStart = 0, long iNanoSecInterval = 0);

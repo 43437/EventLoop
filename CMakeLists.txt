@@ -19,6 +19,7 @@ set(JSON_DIR "${CMAKE_CURRENT_LIST_DIR}/json")
 set(LUA_DIR "${CMAKE_CURRENT_LIST_DIR}/lua")
 set(LUA_WRAPPER_DIR "${CMAKE_CURRENT_LIST_DIR}/luawrapper")
 set(TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/test")
+set(CORE_DIR "${CMAKE_CURRENT_LIST_DIR}/core")
 
 #set include dir
 list(APPEND INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}")
@@ -29,7 +30,7 @@ list(APPEND INCLUDE_DIRS ${JSON_DIR})
 list(APPEND INCLUDE_DIRS ${LUA_DIR})
 list(APPEND INCLUDE_DIRS ${LUA_WRAPPER_DIR})
 list(APPEND INCLUDE_DIRS ${TEST_DIR})
-
+list(APPEND INCLUDE_DIRS ${CORE_DIR})
 include_directories(${INCLUDE_DIRS})
 
 #set src dir
@@ -43,6 +44,7 @@ aux_source_directory(${LUA_DIR} SRC_LUA)
 list(FILTER SRC_LUA EXCLUDE REGEX "lua.c")
 aux_source_directory(${LUA_WRAPPER_DIR} SRC_LUA_WRAPPER)
 aux_source_directory(${TEST_DIR} SRC_TEST)
+aux_source_directory(${CORE_DIR} SRC_CORE)
 
 #collect all src files
 list(APPEND SRC_FILES ${SRC_ROOT})
@@ -53,6 +55,7 @@ list(APPEND SRC_FILES ${SRC_JSON})
 list(APPEND SRC_FILES ${SRC_LUA})
 list(APPEND SRC_FILES ${SRC_LUA_WRAPPER})
 list(APPEND SRC_FILES ${SRC_TEST})
+list(APPEND SRC_FILES ${SRC_CORE})
 
 message("SRC_FILES:")
 foreach(src_file ${SRC_FILES})
