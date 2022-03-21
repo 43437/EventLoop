@@ -3,7 +3,12 @@
 namespace KOT
 {
 
-CLuaWorker::CLuaWorker(const SWorkerID& stuWorkID) : CWorker(stuWorkID)
+CWorker* CLuaWorkerBuilder::Build()
+{
+    return new CLuaWorker(m_strWorkerID);
+}
+
+CLuaWorker::CLuaWorker(const std::string& stuWorkID) : CWorker(stuWorkID)
 {
 
 }

@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <cworker.h>
 #include <string>
+#include <mutex>
+#include "cworkerbuilder.h"
 
 namespace KOT
 {
@@ -13,16 +15,16 @@ class CWorkPlace
 {
 public:
     static CWorkPlace& GetInstance();
-    void AddWorker(const std::string& strWorker = "");
-    void Message(const SWorkerID& stuWorkerID, const std::string& strMsg);
+    void AddWorker(CWorkerBuilder& builder);
+    void Message(const std::string& stuWorkerID, const std::string& strMsg);
     void Exec();
 
 private:
     CWorkPlace();
 
 private:
-    long                                    m_lSN;
-    std::unordered_map<SWorkerID, CWorker*, SWorkerIDHash> m_mapWorkers;
+    std::unordered_map<std::string, CWorker*>               m_mapWorkers;
+    mutable std::recursive_mutex                            m_RecursiveMutex;
 };
 
 } // namespace KOT

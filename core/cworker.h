@@ -8,29 +8,11 @@
 
 namespace KOT
 {
-    
-struct SWorkerID
-{
-    long            m_lWorkerID;
-    std::string     m_strWorkerID;
-    SWorkerID(long lWorkerID, const std::string strWorkerID);
-
-    bool operator==(const SWorkerID& other) const;
-    const std::string Description();
-};
-
-struct SWorkerIDHash
-{
-    size_t operator()(const SWorkerID& stuWorkerID) const
-    {
-        return stuWorkerID.m_lWorkerID;
-    }
-};
 
 class CWorker
 {
 public:
-    CWorker(const SWorkerID& stuWorkID);
+    CWorker(const std::string& stuWorkID);
     virtual ~CWorker();
     virtual void Start();
     virtual void Message(const std::string& string);
@@ -62,7 +44,7 @@ protected:
 protected:
     CMsgQueue               m_objMsgQueue;
     std::thread             m_objThread;
-    SWorkerID               m_stuWorkerID;
+    std::string             m_stuWorkerID;
     CWorkerTimerCaller      *m_pTimerCaller;
     std::set<int>           m_setTimerID;
 };
