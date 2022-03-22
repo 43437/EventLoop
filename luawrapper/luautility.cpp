@@ -326,4 +326,19 @@ int Log(lua_State* L)
     return 0;
 }
 
+bool NoError(lua_State* L, int iRet)
+{
+    if (0 != iRet)
+    {
+        std::cout << lua_tostring(L, -1) << std::endl;
+        lua_pop(L, 1);
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+    
+}
+
 }

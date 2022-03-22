@@ -13,4 +13,5 @@ std::string LuaTable2JSON(lua_State* L);
 void JSON2LuaTable(lua_State* L, const std::string& json);
 
 int Log(lua_State* L);
+bool NoError(lua_State* L, int iRet);
 }

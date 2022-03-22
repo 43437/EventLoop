@@ -3,6 +3,7 @@
 
 #include "cworker.h"
 #include "cworkerbuilder.h"
+#include "luautility.h"
 
 namespace KOT
 {
@@ -21,7 +22,11 @@ public:
     virtual void OnTimer(int iTimerID);
 
 protected:
+    virtual void Init();
     virtual void OnMessage(const std::string& strMsg);
+
+protected:
+    lua_State                   *m_pLuaState;
 };
 
 } // namespace KOT
