@@ -19,11 +19,13 @@ class CLuaWorker : public CWorker
 public:
     CLuaWorker(const std::string& stuWorkID);
     ~CLuaWorker();
-    virtual void OnTimer(int iTimerID);
 
 protected:
     virtual void Init();
-    virtual void OnMessage(const std::string& strMsg);
+    void OnLoad();
+    virtual bool OnMessage(const std::string& strMsg);
+    virtual void OnTimer(int iTimerID);
+    void RemeberThis();
 
 protected:
     lua_State                   *m_pLuaState;

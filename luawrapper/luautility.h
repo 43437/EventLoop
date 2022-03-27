@@ -14,4 +14,17 @@ void JSON2LuaTable(lua_State* L, const std::string& json);
 
 int Log(lua_State* L);
 bool NoError(lua_State* L, int iRet);
+
+template<class T>
+T* GetPointer(lua_State* L, const std::string& strQuote)
+{
+    int iTop = lua_gettop(L);
+    lua_getglobal(L, strQuote.c_str());
+    T *p = (T*)lua_topointer(L, -1);
+    lua_settop(L, iTop);
+    return p;
+}
+
+void SetPointer(lua_State* L, const std::string& strQuote, void* ptr);
+
 }

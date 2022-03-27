@@ -1,8 +1,6 @@
 #include "cworkplace.h"
 #include "clogutil.h"
 
-static const int ADD_WORKER_TRY = 10;
-
 namespace KOT
 {
     

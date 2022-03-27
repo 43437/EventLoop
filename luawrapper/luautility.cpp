@@ -341,4 +341,12 @@ bool NoError(lua_State* L, int iRet)
     
 }
 
+void SetPointer(lua_State* L, const std::string& strQuote, void* ptr)
+{
+    int iTop = lua_gettop(L);
+    lua_pushlightuserdata(L, ptr);
+    lua_setglobal(L, strQuote.c_str());
+    lua_settop(L, iTop);
+}
+
 }

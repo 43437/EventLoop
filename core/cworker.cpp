@@ -3,8 +3,6 @@
 #include "clogutil.h"
 #include "cworktimermanager.h"
 
-static const std::string    WORKER_QUIT = "QUIT";
-
 namespace KOT
 {
 
@@ -31,24 +29,33 @@ CWorker::~CWorker()
 
 void CWorker::Run()
 {
-    std::string strMsg("");
+    SMsg stuMsg;
+    bool bLoop = true;
     while (true)
     {
-        m_objMsgQueue.QueueOut(strMsg);
-        LogUtil.Log("CWorker " + m_stuWorkerID + "get Msg" + strMsg);
-        if (WORKER_QUIT == strMsg)
+        m_objMsgQueue.QueueOut(stuMsg);
+        switch (stuMsg.m_eMsgType)
         {
+        case eMsgType_Timer:
+            OnTimer(stuMsg.m_Data.m_iTimerID);
+            LogUtil.Log("CWorker " + m_stuWorkerID + "timer " + std::to_string(stuMsg.m_Data.m_iTimerID));
+            break;
+        case eMsgType_Msg:
+            bLoop = OnMessage(stuMsg.m_Data.m_strMsg);
+            LogUtil.Log("CWorker " + m_stuWorkerID + "msg " + stuMsg.m_Data.m_strMsg);
+            break;
+        default:
             break;
         }
-        else
-        {
-            OnMessage(strMsg);
-        }
-        
     }
 }
 
-void CWorker::OnMessage(const std::string& strMsg)
+bool CWorker::OnMessage(const std::string& strMsg)
+{
+    return true;
+}
+
+void CWorker::OnTimer(int iTimerID)
 {
 
 }
@@ -58,24 +65,25 @@ void CWorker::Start()
    m_objThread = std::thread(&CWorker::Run, this);
 }
 
-void CWorker::Quit()
-{
-    m_objMsgQueue.QueueIn(WORKER_QUIT);
-}
-
 void CWorker::WaitForQuit()
 {
    m_objThread.join();
 }
 
-void CWorker::Message(const std::string& string)
+void CWorker::Message(const std::string& strMsg)
 {
-    m_objMsgQueue.QueueIn(string);
+    SMsg stuMsg;
+    stuMsg.m_eMsgType = eMsgType_Msg,
+    stuMsg.m_Data.m_strMsg = strMsg;
+    m_objMsgQueue.QueueIn(stuMsg);
 }
 
-void CWorker::OnTimer(int iTimerID)
+void CWorker::OnTimerEvent(int iTimerID)
 {
-
+    SMsg stuMsg;
+    stuMsg.m_eMsgType = eMsgType_Timer,
+    stuMsg.m_Data.m_iTimerID = iTimerID;
+    m_objMsgQueue.QueueIn(stuMsg);
 }
 
 int CWorker::NewTimer()

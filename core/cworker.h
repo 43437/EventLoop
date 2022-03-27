@@ -15,10 +15,13 @@ public:
     CWorker(const std::string& stuWorkID);
     virtual ~CWorker();
     virtual void Start();
-    virtual void Message(const std::string& string);
-    void Quit();
+    virtual void Message(const std::string& strMsg);
     void WaitForQuit();
-    virtual void OnTimer(int iTimerID);
+    virtual void OnTimerEvent(int iTimerID);
+    int NewTimer();
+    bool SetTimer(int iTimerID, __time_t iSecStart, __time_t iSecInterval, long iNanoSecStart = 0, long iNanoSecInterval = 0);
+    bool StartTimer(int iTimerID, __time_t iSecStart, __time_t iSecInterval, long iNanoSecStart = 0, long iNanoSecInterval = 0);
+    bool StartTimer(int iTimerID);
 
 protected:
     class CWorkerTimerCaller : public CTimerCaller
@@ -32,14 +35,11 @@ protected:
 
 protected:
     virtual void Run();
-    virtual void OnMessage(const std::string& strMsg);
-    int NewTimer();
-    bool SetTimer(int iTimerID, __time_t iSecStart, __time_t iSecInterval, long iNanoSecStart = 0, long iNanoSecInterval = 0);
-    bool StartTimer(int iTimerID, __time_t iSecStart, __time_t iSecInterval, long iNanoSecStart = 0, long iNanoSecInterval = 0);
-    bool StartTimer(int iTimerID);
+    virtual bool OnMessage(const std::string& strMsg);
     inline void DestroyTimer(int iTimerID);
     inline void DestroyTimers();
     inline bool IsValidTimerID(int iTimerID);
+    virtual void OnTimer(int iTimerID);
 
 protected:
     CMsgQueue               m_objMsgQueue;
