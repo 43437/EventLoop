@@ -1,14 +1,38 @@
 #include "cluaworker.h"
 #include "cworkplace.h"
+#include "clogutil.h"
 
 namespace KOT
 {
 
 int Message(lua_State* L)
 {
-    std::string strMsg = LuaTable2JSON(L);
-    std::string strWorker;
-    CWorkPlace::GetInstance().Message(strWorker, strMsg);
+    bool bRet = false;
+    cJSON* pJsonObj = LuaTable2JSONObj(L);
+    if (nullptr != pJsonObj)
+    {
+        cJSON* pJsonHead = cJSON_GetObjectItem(pJsonObj, "head");
+        if (nullptr != pJsonHead)
+        {
+            cJSON* pJsonDst = cJSON_GetObjectItem(pJsonHead, "dst");
+            if (nullptr != pJsonDst && (pJsonDst->type == cJSON_String) )
+            {
+                bRet = true;
+                std::string strDst = pJsonDst->valuestring;
+                char* jsonMsg = cJSON_PrintUnformatted(pJsonObj);
+                std::string strMsg = jsonMsg;
+                CWorkPlace::GetInstance().Message(strDst, strMsg);
+                free(jsonMsg);
+            }
+        }
+        cJSON_Delete(pJsonObj);
+    }
+    if (!bRet)
+    {
+        std::string strMsg = LuaTable2JSON(L);
+        LogUtil.Log("Lua Message failed: " + strMsg);
+    }
+
     return 0;
 }
 

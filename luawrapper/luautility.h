@@ -9,6 +9,7 @@ extern luaL_Reg utilityFunc[];
 void RegisterLib(lua_State* L, const char* crModName, const luaL_Reg arrFunc[]);
 void AddLuaEnv(lua_State* L, const char *name, const char* value);
 
+cJSON* LuaTable2JSONObj(lua_State* L);
 std::string LuaTable2JSON(lua_State* L);
 void JSON2LuaTable(lua_State* L, const std::string& json);
 

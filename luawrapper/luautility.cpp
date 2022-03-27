@@ -161,7 +161,7 @@ void LuaTable2JSON(cJSON*& pJsonNode, int iIndex, lua_State* L)
     
 }
 
-char* LuaValue2JSON(lua_State* L, bool bIsFormat)
+cJSON* LuaValue2JSONObj(lua_State* L)
 {
     cJSON* pJsonRoot = nullptr;
     int iTop = lua_gettop(L);
@@ -189,6 +189,12 @@ char* LuaValue2JSON(lua_State* L, bool bIsFormat)
         luaL_argcheck(L, false, 1, std::string(lua_typename(L, iTop)).append(" not support to dump.").c_str());
         break;
     }
+    return pJsonRoot;
+}
+
+char* LuaValue2JSON(lua_State* L, bool bIsFormat)
+{
+    cJSON* pJsonRoot = LuaValue2JSONObj(L);
     char* json = bIsFormat ? cJSON_Print(pJsonRoot) : cJSON_PrintUnformatted(pJsonRoot);
     cJSON_Delete(pJsonRoot);
     return json;
@@ -255,6 +261,11 @@ void JSON2LuaValue(cJSON* pJsonNode, lua_State* L)
     }
     if (pJsonNode->string)
         lua_settable(L, -3);
+}
+
+cJSON* LuaTable2JSONObj(lua_State* L)
+{
+    return LuaValue2JSONObj(L);
 }
 
 std::string LuaTable2JSON(lua_State* L)

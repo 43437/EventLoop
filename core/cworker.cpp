@@ -31,7 +31,7 @@ void CWorker::Run()
 {
     SMsg stuMsg;
     bool bLoop = true;
-    while (true)
+    while (bLoop)
     {
         m_objMsgQueue.QueueOut(stuMsg);
         switch (stuMsg.m_eMsgType)
