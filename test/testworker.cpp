@@ -2,6 +2,7 @@
 #include "cworkplace.h"
 #include <iostream>
 #include "cworkerbuilder.h"
+#include "cluaworker.h"
 
 namespace KOT
 {
@@ -18,10 +19,12 @@ public:
 void TestWorker()
 {
     std::cout << "===========TestWorker==========" << std::endl;
-    TestWorkerBuilder builder;
+    CLuaWorkerBuilder builder;
+    builder.AddEnvPath("../script/test/");
+
+    // TestWorkerBuilder builder;
     CWorkPlace::GetInstance().AddWorker(builder.SetWorkerID("worker1"));
     CWorkPlace::GetInstance().AddWorker(builder.SetWorkerID("worker2"));
-    CWorkPlace::GetInstance().AddWorker(builder.SetWorkerID("worker3"));
 
     CWorkPlace::GetInstance().Exec();
     std::cout << "=============================" << std::endl;

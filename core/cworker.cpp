@@ -31,6 +31,7 @@ void CWorker::Run()
 {
     SMsg stuMsg;
     bool bLoop = true;
+    OnStart();
     while (bLoop)
     {
         m_objMsgQueue.QueueOut(stuMsg);
@@ -48,6 +49,11 @@ void CWorker::Run()
             break;
         }
     }
+}
+
+void CWorker::OnStart()
+{
+
 }
 
 bool CWorker::OnMessage(const std::string& strMsg)

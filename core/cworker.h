@@ -35,6 +35,7 @@ protected:
 
 protected:
     virtual void Run();
+    virtual void OnStart();
     virtual bool OnMessage(const std::string& strMsg);
     inline void DestroyTimer(int iTimerID);
     inline void DestroyTimers();

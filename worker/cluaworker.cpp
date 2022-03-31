@@ -109,14 +109,29 @@ static luaL_Reg workerFunc[] = {
 
 CWorker* CLuaWorkerBuilder::Build()
 {
-    return new CLuaWorker(m_strWorkerID);
+    CLuaWorker* pWorker = new CLuaWorker(m_strWorkerID);
+    if (nullptr != pWorker)
+    {
+        for (std::vector<std::string>::const_iterator itPath = m_vecEnvPath.begin(); m_vecEnvPath.end() != itPath; ++itPath)
+        {
+            const std::string& strEnvPath = *itPath;
+            pWorker->AddEnvPath(strEnvPath);
+        }
+    }
+    return pWorker;
+}
+
+CLuaWorkerBuilder& CLuaWorkerBuilder::AddEnvPath(const std::string& strEnvPath)
+{
+    m_vecEnvPath.push_back(strEnvPath);
+    return *this;
 }
 
 CLuaWorker::CLuaWorker(const std::string& stuWorkID) : CWorker(stuWorkID)
     ,m_pLuaState(nullptr)
+    ,m_strPath("")
 {
     Init();
-    OnLoad();
 }
 
 CLuaWorker::~CLuaWorker()
@@ -133,12 +148,24 @@ void CLuaWorker::Init()
 {
     m_pLuaState = luaL_newstate();
     luaL_openlibs(m_pLuaState);
-    KOT::AddLuaEnv(m_pLuaState, "path", "./../script/?.lua");
+    // KOT::AddLuaEnv(m_pLuaState, "path", "./../script/?.lua");
     KOT::RegisterLib(m_pLuaState, KOT::KOT_LUA_LIB, KOT::utilityFunc);
     KOT::RegisterLib(m_pLuaState, KOT::KOT_LUA_LIB, KOT::workerFunc);
-    std::string strScript = m_stuWorkerID + ".lua";
+    lua_settop(m_pLuaState, 0);
+}
+
+void CLuaWorker::LoadScript()
+{
+    std::string strScript = m_strPath + m_stuWorkerID + ".lua";
     NoError(m_pLuaState, luaL_dofile(m_pLuaState, strScript.c_str() ));
     lua_settop(m_pLuaState, 0);
+}
+
+void CLuaWorker::OnStart()
+{
+    LoadScript();
+
+    OnLoad();
 }
 
 void CLuaWorker::OnLoad()
@@ -166,6 +193,16 @@ bool CLuaWorker::OnMessage(const std::string& strMsg)
     NoError(m_pLuaState, lua_pcall(m_pLuaState, 1, 0, 0));
     lua_settop(m_pLuaState, iTop);
     return true;
+}
+
+void CLuaWorker::AddEnvPath(const std::string& strEnvPath)
+{
+    KOT::AddLuaEnv(m_pLuaState, "path", strEnvPath.c_str());
+}
+
+void CLuaWorker::SetWorkerPath(const std::string& strPath)
+{
+    m_strPath = strPath;
 }
 
 } // namespace KOT

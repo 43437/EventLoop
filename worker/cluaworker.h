@@ -4,6 +4,7 @@
 #include "cworker.h"
 #include "cworkerbuilder.h"
 #include "luautility.h"
+#include <vector>
 
 namespace KOT
 {
@@ -12,6 +13,10 @@ class CLuaWorkerBuilder : public CWorkerBuilder
 {
 public:
     virtual CWorker* Build();
+    CLuaWorkerBuilder& AddEnvPath(const std::string& strEnvPath);
+
+private:
+    std::vector<std::string> m_vecEnvPath;
 };
 
 class CLuaWorker : public CWorker
@@ -19,16 +24,21 @@ class CLuaWorker : public CWorker
 public:
     CLuaWorker(const std::string& stuWorkID);
     ~CLuaWorker();
+    void SetWorkerPath(const std::string& strPath);
+    void AddEnvPath(const std::string& strEnvPath);
 
 protected:
     virtual void Init();
+    void LoadScript();
     void OnLoad();
+    virtual void OnStart();
     virtual bool OnMessage(const std::string& strMsg);
     virtual void OnTimer(int iTimerID);
     void RemeberThis();
 
 protected:
     lua_State                   *m_pLuaState;
+    std::string                 m_strPath;
 };
 
 } // namespace KOT
