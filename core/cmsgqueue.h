@@ -24,13 +24,8 @@ public:
     SMsg(const KOT::SMsg&);
     SMsg& operator=(const SMsg& stuMsg);
     EMsgType            m_eMsgType;
-    union Data
-    {
-        Data(){};
-        ~Data(){};
-        int             m_iTimerID;
-        std::string     m_strMsg;
-    }m_Data;
+    int                 m_iTimerID;
+    std::string         m_strMsg;
 };
     
 class CMsgQueue

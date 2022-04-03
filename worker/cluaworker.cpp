@@ -54,18 +54,19 @@ int StartTimer(lua_State* L)
     if (nullptr != pWorker)
     {
         int argc = lua_gettop(L);
-        if (argc > 5)
+        if (argc == 5)
         {
-            int arg1 = lua_tointeger(L, 2);
-            int arg2 = lua_tointeger(L, 3);
-            int arg3 = lua_tointeger(L, 4);
-            int arg4 = lua_tointeger(L, 5);
-            int arg5 = lua_tointeger(L, 6);
+            int arg1 = lua_tointeger(L, 1);
+            int arg2 = lua_tointeger(L, 2);
+            int arg3 = lua_tointeger(L, 3);
+            int arg4 = lua_tointeger(L, 4);
+            int arg5 = lua_tointeger(L, 5);
+            
             pWorker->StartTimer(arg1, arg2, arg3, arg4, arg5);
         }
         else
         {
-            int arg1 = lua_tointeger(L, 2);
+            int arg1 = lua_tointeger(L, 1);
             pWorker->StartTimer(arg1);
         }
     }
@@ -74,11 +75,11 @@ int StartTimer(lua_State* L)
 
 int SetTimer(lua_State* L)
 {
-    int arg1 = lua_tointeger(L, 2);
-    int arg2 = lua_tointeger(L, 3);
-    int arg3 = lua_tointeger(L, 4);
-    int arg4 = lua_tointeger(L, 5);
-    int arg5 = lua_tointeger(L, 6);
+    int arg1 = lua_tointeger(L, 1);
+    int arg2 = lua_tointeger(L, 2);
+    int arg3 = lua_tointeger(L, 3);
+    int arg4 = lua_tointeger(L, 4);
+    int arg5 = lua_tointeger(L, 5);
     CLuaWorker* pWorker = GetPointer<CLuaWorker>(L, "g_pWorker");
     if (nullptr != pWorker)
     {
@@ -117,6 +118,7 @@ CWorker* CLuaWorkerBuilder::Build()
             const std::string& strEnvPath = *itPath;
             pWorker->AddEnvPath(strEnvPath);
         }
+        pWorker->SetWorkerPath(m_strWorkerPath);
     }
     return pWorker;
 }
@@ -127,11 +129,23 @@ CLuaWorkerBuilder& CLuaWorkerBuilder::AddEnvPath(const std::string& strEnvPath)
     return *this;
 }
 
+CLuaWorkerBuilder& CLuaWorkerBuilder::ClearEnvPath()
+{
+    m_vecEnvPath.clear();
+}
+
+CLuaWorkerBuilder& CLuaWorkerBuilder::SetWorkerPath(const std::string& strPath)
+{
+    m_strWorkerPath = strPath;
+}
+
 CLuaWorker::CLuaWorker(const std::string& stuWorkID) : CWorker(stuWorkID)
     ,m_pLuaState(nullptr)
     ,m_strPath("")
 {
     Init();
+
+    RemeberThis();
 }
 
 CLuaWorker::~CLuaWorker()
@@ -171,7 +185,7 @@ void CLuaWorker::OnStart()
 void CLuaWorker::OnLoad()
 {
     int iTop = lua_gettop(m_pLuaState);
-    NoError(m_pLuaState, lua_getglobal(m_pLuaState, "on_load"));
+    lua_getglobal(m_pLuaState, "on_load");
     NoError(m_pLuaState, lua_pcall(m_pLuaState, 0, 0, 0));
     lua_settop(m_pLuaState, iTop);
 }
@@ -179,7 +193,7 @@ void CLuaWorker::OnLoad()
 void CLuaWorker::OnTimer(int iTimerID)
 {
     int iTop = lua_gettop(m_pLuaState);
-    NoError(m_pLuaState, lua_getglobal(m_pLuaState, "on_timer"));
+    lua_getglobal(m_pLuaState, "on_timer");
     lua_pushinteger(m_pLuaState, iTimerID);
     NoError(m_pLuaState, lua_pcall(m_pLuaState, 1, 0, 0));
     lua_settop(m_pLuaState, iTop);
@@ -187,12 +201,16 @@ void CLuaWorker::OnTimer(int iTimerID)
 
 bool CLuaWorker::OnMessage(const std::string& strMsg)
 {
+    bool bRet = true;
     int iTop = lua_gettop(m_pLuaState);
-    NoError(m_pLuaState, lua_getglobal(m_pLuaState, "on_message"));
+    lua_getglobal(m_pLuaState, "on_message");
     JSON2LuaTable(m_pLuaState, strMsg);
-    NoError(m_pLuaState, lua_pcall(m_pLuaState, 1, 0, 0));
+    if ( NoError(m_pLuaState, lua_pcall(m_pLuaState, 1, 1, 0)) )
+    {
+        bRet = lua_toboolean(m_pLuaState, -1);
+    }
     lua_settop(m_pLuaState, iTop);
-    return true;
+    return bRet;
 }
 
 void CLuaWorker::AddEnvPath(const std::string& strEnvPath)

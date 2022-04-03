@@ -7,20 +7,12 @@
 namespace KOT
 {
 
-class TestWorkerBuilder : public CWorkerBuilder
-{
-public:
-    virtual CWorker* Build()
-    {
-        return new CWorker(m_strWorkerID);
-    }
-};
-
 void TestWorker()
 {
     std::cout << "===========TestWorker==========" << std::endl;
     CLuaWorkerBuilder builder;
-    builder.AddEnvPath("../script/test/");
+    builder.SetWorkerPath("../script/test/");
+    // builder.AddEnvPath("../script/test/?.lua");
 
     // TestWorkerBuilder builder;
     CWorkPlace::GetInstance().AddWorker(builder.SetWorkerID("worker1"));

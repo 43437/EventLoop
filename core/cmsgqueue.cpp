@@ -14,10 +14,10 @@ SMsg::SMsg(const KOT::SMsg& stuMsg)
     switch (this->m_eMsgType)
     {
     case eMsgType_Timer:
-        this->m_Data.m_iTimerID = stuMsg.m_Data.m_iTimerID;
+        this->m_iTimerID = stuMsg.m_iTimerID;
         break;
     case eMsgType_Msg:
-        this->m_Data.m_strMsg = stuMsg.m_Data.m_strMsg;
+        this->m_strMsg = stuMsg.m_strMsg;
         break;
     default:
         break;
@@ -35,10 +35,10 @@ SMsg& SMsg::operator=(const SMsg& stuMsg)
     switch (this->m_eMsgType)
     {
     case eMsgType_Timer:
-        this->m_Data.m_iTimerID = stuMsg.m_Data.m_iTimerID;
+        this->m_iTimerID = stuMsg.m_iTimerID;
         break;
     case eMsgType_Msg:
-        this->m_Data.m_strMsg = stuMsg.m_Data.m_strMsg;
+        this->m_strMsg = stuMsg.m_strMsg;
         break;
     default:
         break;

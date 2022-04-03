@@ -14,9 +14,12 @@ class CLuaWorkerBuilder : public CWorkerBuilder
 public:
     virtual CWorker* Build();
     CLuaWorkerBuilder& AddEnvPath(const std::string& strEnvPath);
+    CLuaWorkerBuilder& ClearEnvPath();
+    CLuaWorkerBuilder& SetWorkerPath(const std::string& strPath);
 
 private:
-    std::vector<std::string> m_vecEnvPath;
+    std::vector<std::string>    m_vecEnvPath;
+    std::string                 m_strWorkerPath;
 };
 
 class CLuaWorker : public CWorker

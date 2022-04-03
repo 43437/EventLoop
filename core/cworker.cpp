@@ -14,7 +14,7 @@ CWorker::CWorkerTimerCaller::CWorkerTimerCaller(CWorker* pOwner) : CTimerCaller(
 
 void CWorker::CWorkerTimerCaller::OnTimer(int iTimerID)
 {
-    m_pOwner->OnTimer(iTimerID);
+    m_pOwner->OnTimerEvent(iTimerID);
 }
 
 CWorker::CWorker(const std::string& stuWorkID) : m_stuWorkerID(stuWorkID)
@@ -34,19 +34,21 @@ void CWorker::Run()
     OnStart();
     while (bLoop)
     {
-        m_objMsgQueue.QueueOut(stuMsg);
-        switch (stuMsg.m_eMsgType)
+        if ( m_objMsgQueue.QueueOut(stuMsg) )
         {
-        case eMsgType_Timer:
-            OnTimer(stuMsg.m_Data.m_iTimerID);
-            LogUtil.Log("CWorker " + m_stuWorkerID + "timer " + std::to_string(stuMsg.m_Data.m_iTimerID));
-            break;
-        case eMsgType_Msg:
-            bLoop = OnMessage(stuMsg.m_Data.m_strMsg);
-            LogUtil.Log("CWorker " + m_stuWorkerID + "msg " + stuMsg.m_Data.m_strMsg);
-            break;
-        default:
-            break;
+            switch (stuMsg.m_eMsgType)
+            {
+            case eMsgType_Timer:
+                OnTimer(stuMsg.m_iTimerID);
+                LogUtil.Log("CWorker " + m_stuWorkerID + " timer " + std::to_string(stuMsg.m_iTimerID));
+                break;
+            case eMsgType_Msg:
+                bLoop = OnMessage(stuMsg.m_strMsg);
+                LogUtil.Log("CWorker " + m_stuWorkerID + " msg " + stuMsg.m_strMsg);
+                break;
+            default:
+                break;
+            }
         }
     }
 }
@@ -80,7 +82,7 @@ void CWorker::Message(const std::string& strMsg)
 {
     SMsg stuMsg;
     stuMsg.m_eMsgType = eMsgType_Msg,
-    stuMsg.m_Data.m_strMsg = strMsg;
+    stuMsg.m_strMsg = strMsg;
     m_objMsgQueue.QueueIn(stuMsg);
 }
 
@@ -88,7 +90,7 @@ void CWorker::OnTimerEvent(int iTimerID)
 {
     SMsg stuMsg;
     stuMsg.m_eMsgType = eMsgType_Timer,
-    stuMsg.m_Data.m_iTimerID = iTimerID;
+    stuMsg.m_iTimerID = iTimerID;
     m_objMsgQueue.QueueIn(stuMsg);
 }
 

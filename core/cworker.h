@@ -37,10 +37,10 @@ protected:
     virtual void Run();
     virtual void OnStart();
     virtual bool OnMessage(const std::string& strMsg);
+    virtual void OnTimer(int iTimerID);
     inline void DestroyTimer(int iTimerID);
     inline void DestroyTimers();
     inline bool IsValidTimerID(int iTimerID);
-    virtual void OnTimer(int iTimerID);
 
 protected:
     CMsgQueue               m_objMsgQueue;

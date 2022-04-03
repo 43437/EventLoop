@@ -317,7 +317,9 @@ int Log(lua_State* L)
         }
         else
         {
-            argv.push_front(lua_tostring(L, -1));
+            const char* str = lua_tostring(L, -1);
+            if (nullptr != str)
+                argv.push_front(str);
         }
         lua_pop(L, 1);
         --iIndex;
