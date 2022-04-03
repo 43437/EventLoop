@@ -39,12 +39,12 @@ void CWorker::Run()
             switch (stuMsg.m_eMsgType)
             {
             case eMsgType_Timer:
-                OnTimer(stuMsg.m_iTimerID);
                 LogUtil.Log("CWorker " + m_stuWorkerID + " timer " + std::to_string(stuMsg.m_iTimerID));
+                OnTimer(stuMsg.m_iTimerID);
                 break;
             case eMsgType_Msg:
-                bLoop = OnMessage(stuMsg.m_strMsg);
                 LogUtil.Log("CWorker " + m_stuWorkerID + " msg " + stuMsg.m_strMsg);
+                bLoop = OnMessage(stuMsg.m_strMsg);
                 break;
             default:
                 break;
